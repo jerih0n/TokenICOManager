@@ -13,6 +13,8 @@ interface IInicialCoinOffering {
     //return the status of ICO
     function getStatus() external returns(InitialCoinOfferingStatus);
 
+    //end the ICO
+    function end() external returns(InitialCoinOfferingStatus);
 
 
 }
