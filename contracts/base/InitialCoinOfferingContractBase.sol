@@ -12,6 +12,8 @@ contract InitialCoinOfferingConractBase is IInicialCoinOffering {
     uint256 private blockTimeStamp; //The block time stamp at the moment of deploy.
     address private contractAddress;
     
+    
+
 
     modifier onlyOwner {
         require(msg.sender == owner, "Access Denied");
@@ -52,6 +54,7 @@ contract InitialCoinOfferingConractBase is IInicialCoinOffering {
 
     
     function buy() public payable virtual override started returns(bool) {      
+        
         
         emit Transfer();
 
