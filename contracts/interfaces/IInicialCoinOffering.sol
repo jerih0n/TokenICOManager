@@ -16,6 +16,5 @@ interface IInicialCoinOffering {
     //end the ICO
     function end() external returns(InitialCoinOfferingStatus);
 
-
 }
 

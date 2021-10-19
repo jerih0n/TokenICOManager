@@ -5,7 +5,7 @@ import "../interfaces/IInicialCoinOffering.sol";
 //Declare the base logic for ICO contract
 contract InitialCoinOfferingConractBase is IInicialCoinOffering {
 
-    address private _owner;
+    address private owner;
     InitialCoinOfferingStatus private status;
     uint256 private startDateTimestamp; //startDate of the ICO in second
     uint256 private endDateTimestamp; //end Date of the ICO in second
@@ -13,7 +13,7 @@ contract InitialCoinOfferingConractBase is IInicialCoinOffering {
     address private contractAddress;
     
 
-    modifier owner {
+    modifier onlyOwner {
         require(msg.sender == owner, "Access Denied");
         _;
     }
@@ -32,10 +32,10 @@ contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         _;
     }
 
-    constructor (uint256 _startDateTimestamp, uint256 _endDateTimeStamp, address _contractAddress) validTimeStamps {
+    constructor (uint256 _startDateTimestamp, uint256 _endDateTimeStamp, address _contractAddress) {
         //On Deploy the ICO is NOT Started
         status = InitialCoinOfferingStatus.NotStarted; 
-        _owner = payable(msg.sender); //setting the owner of the ICO 
+        owner = payable(msg.sender); //setting the owner of the ICO 
         blockTimeStamp = block.timestamp; //set the last block timestamp
 
         //basic validation of the dates
@@ -44,17 +44,25 @@ contract InitialCoinOfferingConractBase is IInicialCoinOffering {
 
         startDateTimestamp = _startDateTimestamp;
         endDateTimestamp = _endDateTimeStamp;
+
         //TODO: check if the address is ERC20 
+
         contractAddress = _contractAddress;
     }
 
     
-    function buy() public virtual override payable started returns(bool) {
+    function buy() public payable virtual override started returns(bool) {      
+        
+        emit Transfer();
 
         return false;
     }
 
-    function start() public virtual override owner notStarted returns(InitialCoinOfferingStatus) {
+    function start() public virtual override onlyOwner notStarted returns(InitialCoinOfferingStatus) {
+
+        status = InitialCoinOfferingStatus.InProgress;
+
+        emit IcoStart(startDateTimestamp, endDateTimestamp);
 
         return status;
     }
@@ -64,11 +72,18 @@ contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         return status;
     }
 
-    function end() public virtual override owner icoCanExpire returns(InitialCoinOfferingStatus) {
+    function end() public virtual override onlyOwner icoCanExpire returns(InitialCoinOfferingStatus) {
 
         status = InitialCoinOfferingStatus.Finished;
 
+        emit IcoEnd(endDateTimestamp);
+
         return status;
+
     }
-        
+
+
+    event IcoStart(uint256 _start, uint256 _end);
+    event IcoEnd(uint256 _end);
+    event Transfer();  
 }
