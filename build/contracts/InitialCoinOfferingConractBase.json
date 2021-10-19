@@ -1,0 +1,1189 @@
+{
+  "contractName": "InitialCoinOfferingConractBase",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "buy",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "start",
+      "outputs": [
+        {
+          "internalType": "enum InitialCoinOfferingStatus",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getStatus",
+      "outputs": [
+        {
+          "internalType": "enum InitialCoinOfferingStatus",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.0+commit.c7dfd78e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"buy\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStatus\",\"outputs\":[{\"internalType\":\"enum InitialCoinOfferingStatus\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"start\",\"outputs\":[{\"internalType\":\"enum InitialCoinOfferingStatus\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/base/InitialCoinOfferingContractBase.sol\":\"InitialCoinOfferingConractBase\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/base/InitialCoinOfferingContractBase.sol\":{\"keccak256\":\"0x1ac3cb369278eba403c05c62d837d56a4df4d0e46157c86c21b2c919dfbbad3f\",\"urls\":[\"bzz-raw://9d89d96a41264a72ce91ee71859ab78e0285bcb1abd6bd01247a2faab7b2a268\",\"dweb:/ipfs/QmcrEHwe8SuMBNoxKNUPCkWKW9i49S9Sst9ANmfBjjjpQT\"]},\"project:/contracts/enums/InitialCoinOfferingStatus.sol\":{\"keccak256\":\"0xc8e18599bc16e9eaad30447974c2bdf3535772dfa450d8a0e89e8cc1dac275b8\",\"urls\":[\"bzz-raw://f6af18c35e9f554bc68b3472568a31d09fe571b2c49e45645fbfa0d7f0fc880d\",\"dweb:/ipfs/QmUbA6YKBwqSYonew8esXPQZrjFo3Y8VATytuSy6mLymaJ\"]},\"project:/contracts/interfaces/IInicialCoinOffering.sol\":{\"keccak256\":\"0x9de14ae5ccf6d542cc2b0123d20bf6f0f6a1da8251fca792f53611ff7e3a25e9\",\"urls\":[\"bzz-raw://800e2054e185cc51856d27ec6e1621534e83a58eb049fbe3507210a3b0220cea\",\"dweb:/ipfs/QmesaGYPyD4wnLMWgtvdcMBk6tVdmnSnAf2fmbeSef6k3o\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.8.0;\r\n\r\nimport \"../interfaces/IInicialCoinOffering.sol\";\r\n\r\nabstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {\r\n\r\n    address private _owner;\r\n    InitialCoinOfferingStatus private status;\r\n    \r\n    constructor() {\r\n        //On Deploy the ICO is NOT Started\r\n        status = InitialCoinOfferingStatus.NotStarted; \r\n        _owner = msg.sender; //setting the owner of the ICO \r\n    }\r\n\r\n    function buy() public virtual override payable returns(bool) {\r\n        return false;\r\n    }\r\n\r\n    function start() public virtual override returns(InitialCoinOfferingStatus) {\r\n        return status;\r\n    }\r\n\r\n    function getStatus() public virtual override returns(InitialCoinOfferingStatus) {\r\n        return status;\r\n    }\r\n        \r\n}",
+  "sourcePath": "C:\\Side\\git-repo\\ICOManager\\TokenICOManager\\contracts\\base\\InitialCoinOfferingContractBase.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/base/InitialCoinOfferingContractBase.sol",
+    "exportedSymbols": {
+      "IInicialCoinOffering": [
+        80
+      ],
+      "InitialCoinOfferingConractBase": [
+        53
+      ],
+      "InitialCoinOfferingStatus": [
+        59
+      ]
+    },
+    "id": 54,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:0"
+      },
+      {
+        "absolutePath": "project:/contracts/interfaces/IInicialCoinOffering.sol",
+        "file": "../interfaces/IInicialCoinOffering.sol",
+        "id": 2,
+        "nodeType": "ImportDirective",
+        "scope": 54,
+        "sourceUnit": 81,
+        "src": "27:48:0",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 3,
+              "name": "IInicialCoinOffering",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 80,
+              "src": "131:20:0"
+            },
+            "id": 4,
+            "nodeType": "InheritanceSpecifier",
+            "src": "131:20:0"
+          }
+        ],
+        "contractDependencies": [
+          80
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 53,
+        "linearizedBaseContracts": [
+          53,
+          80
+        ],
+        "name": "InitialCoinOfferingConractBase",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 6,
+            "mutability": "mutable",
+            "name": "_owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 53,
+            "src": "161:22:0",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "161:7:0",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 9,
+            "mutability": "mutable",
+            "name": "status",
+            "nodeType": "VariableDeclaration",
+            "scope": 53,
+            "src": "190:40:0",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+              "typeString": "enum InitialCoinOfferingStatus"
+            },
+            "typeName": {
+              "id": 8,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 7,
+                "name": "InitialCoinOfferingStatus",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 59,
+                "src": "190:25:0"
+              },
+              "referencedDeclaration": 59,
+              "src": "190:25:0",
+              "typeDescriptions": {
+                "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                "typeString": "enum InitialCoinOfferingStatus"
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "body": {
+              "id": 22,
+              "nodeType": "Block",
+              "src": "257:171:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 15,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 12,
+                      "name": "status",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 9,
+                      "src": "312:6:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                        "typeString": "enum InitialCoinOfferingStatus"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "expression": {
+                        "id": 13,
+                        "name": "InitialCoinOfferingStatus",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 59,
+                        "src": "321:25:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_InitialCoinOfferingStatus_$59_$",
+                          "typeString": "type(enum InitialCoinOfferingStatus)"
+                        }
+                      },
+                      "id": 14,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "NotStarted",
+                      "nodeType": "MemberAccess",
+                      "src": "321:36:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                        "typeString": "enum InitialCoinOfferingStatus"
+                      }
+                    },
+                    "src": "312:45:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "id": 16,
+                  "nodeType": "ExpressionStatement",
+                  "src": "312:45:0"
+                },
+                {
+                  "expression": {
+                    "id": 20,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 17,
+                      "name": "_owner",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 6,
+                      "src": "369:6:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "expression": {
+                        "id": 18,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4294967281,
+                        "src": "378:3:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 19,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "src": "378:10:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "369:19:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 21,
+                  "nodeType": "ExpressionStatement",
+                  "src": "369:19:0"
+                }
+              ]
+            },
+            "id": 23,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 10,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "254:2:0"
+            },
+            "returnParameters": {
+              "id": 11,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "257:0:0"
+            },
+            "scope": 53,
+            "src": "243:185:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "internal"
+          },
+          {
+            "baseFunctions": [
+              67
+            ],
+            "body": {
+              "id": 31,
+              "nodeType": "Block",
+              "src": "497:31:0",
+              "statements": [
+                {
+                  "expression": {
+                    "hexValue": "66616c7365",
+                    "id": 29,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "bool",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "515:5:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "value": "false"
+                  },
+                  "functionReturnParameters": 28,
+                  "id": 30,
+                  "nodeType": "Return",
+                  "src": "508:12:0"
+                }
+              ]
+            },
+            "functionSelector": "a6f2ae3a",
+            "id": 32,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "buy",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 25,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "466:8:0"
+            },
+            "parameters": {
+              "id": 24,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "448:2:0"
+            },
+            "returnParameters": {
+              "id": 28,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 27,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 32,
+                  "src": "491:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 26,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "491:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "490:6:0"
+            },
+            "scope": 53,
+            "src": "436:92:0",
+            "stateMutability": "payable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              73
+            ],
+            "body": {
+              "id": 41,
+              "nodeType": "Block",
+              "src": "612:32:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 39,
+                    "name": "status",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 9,
+                    "src": "630:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "functionReturnParameters": 38,
+                  "id": 40,
+                  "nodeType": "Return",
+                  "src": "623:13:0"
+                }
+              ]
+            },
+            "functionSelector": "be9a6555",
+            "id": 42,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "start",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 34,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "568:8:0"
+            },
+            "parameters": {
+              "id": 33,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "550:2:0"
+            },
+            "returnParameters": {
+              "id": 38,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 37,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 42,
+                  "src": "585:25:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                    "typeString": "enum InitialCoinOfferingStatus"
+                  },
+                  "typeName": {
+                    "id": 36,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 35,
+                      "name": "InitialCoinOfferingStatus",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 59,
+                      "src": "585:25:0"
+                    },
+                    "referencedDeclaration": 59,
+                    "src": "585:25:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "584:27:0"
+            },
+            "scope": 53,
+            "src": "536:108:0",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              79
+            ],
+            "body": {
+              "id": 51,
+              "nodeType": "Block",
+              "src": "732:32:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 49,
+                    "name": "status",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 9,
+                    "src": "750:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "functionReturnParameters": 48,
+                  "id": 50,
+                  "nodeType": "Return",
+                  "src": "743:13:0"
+                }
+              ]
+            },
+            "functionSelector": "4e69d560",
+            "id": 52,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getStatus",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 44,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "688:8:0"
+            },
+            "parameters": {
+              "id": 43,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "670:2:0"
+            },
+            "returnParameters": {
+              "id": 48,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 47,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 52,
+                  "src": "705:25:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                    "typeString": "enum InitialCoinOfferingStatus"
+                  },
+                  "typeName": {
+                    "id": 46,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 45,
+                      "name": "InitialCoinOfferingStatus",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 59,
+                      "src": "705:25:0"
+                    },
+                    "referencedDeclaration": 59,
+                    "src": "705:25:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "704:27:0"
+            },
+            "scope": 53,
+            "src": "652:112:0",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          }
+        ],
+        "scope": 54,
+        "src": "79:698:0"
+      }
+    ],
+    "src": "0:777:0"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/base/InitialCoinOfferingContractBase.sol",
+    "exportedSymbols": {
+      "IInicialCoinOffering": [
+        80
+      ],
+      "InitialCoinOfferingConractBase": [
+        53
+      ],
+      "InitialCoinOfferingStatus": [
+        59
+      ]
+    },
+    "id": 54,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:0"
+      },
+      {
+        "absolutePath": "project:/contracts/interfaces/IInicialCoinOffering.sol",
+        "file": "../interfaces/IInicialCoinOffering.sol",
+        "id": 2,
+        "nodeType": "ImportDirective",
+        "scope": 54,
+        "sourceUnit": 81,
+        "src": "27:48:0",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 3,
+              "name": "IInicialCoinOffering",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 80,
+              "src": "131:20:0"
+            },
+            "id": 4,
+            "nodeType": "InheritanceSpecifier",
+            "src": "131:20:0"
+          }
+        ],
+        "contractDependencies": [
+          80
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 53,
+        "linearizedBaseContracts": [
+          53,
+          80
+        ],
+        "name": "InitialCoinOfferingConractBase",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 6,
+            "mutability": "mutable",
+            "name": "_owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 53,
+            "src": "161:22:0",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "161:7:0",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 9,
+            "mutability": "mutable",
+            "name": "status",
+            "nodeType": "VariableDeclaration",
+            "scope": 53,
+            "src": "190:40:0",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+              "typeString": "enum InitialCoinOfferingStatus"
+            },
+            "typeName": {
+              "id": 8,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 7,
+                "name": "InitialCoinOfferingStatus",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 59,
+                "src": "190:25:0"
+              },
+              "referencedDeclaration": 59,
+              "src": "190:25:0",
+              "typeDescriptions": {
+                "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                "typeString": "enum InitialCoinOfferingStatus"
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "body": {
+              "id": 22,
+              "nodeType": "Block",
+              "src": "257:171:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 15,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 12,
+                      "name": "status",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 9,
+                      "src": "312:6:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                        "typeString": "enum InitialCoinOfferingStatus"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "expression": {
+                        "id": 13,
+                        "name": "InitialCoinOfferingStatus",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 59,
+                        "src": "321:25:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_InitialCoinOfferingStatus_$59_$",
+                          "typeString": "type(enum InitialCoinOfferingStatus)"
+                        }
+                      },
+                      "id": 14,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "NotStarted",
+                      "nodeType": "MemberAccess",
+                      "src": "321:36:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                        "typeString": "enum InitialCoinOfferingStatus"
+                      }
+                    },
+                    "src": "312:45:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "id": 16,
+                  "nodeType": "ExpressionStatement",
+                  "src": "312:45:0"
+                },
+                {
+                  "expression": {
+                    "id": 20,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 17,
+                      "name": "_owner",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 6,
+                      "src": "369:6:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "expression": {
+                        "id": 18,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4294967281,
+                        "src": "378:3:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 19,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "src": "378:10:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "369:19:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 21,
+                  "nodeType": "ExpressionStatement",
+                  "src": "369:19:0"
+                }
+              ]
+            },
+            "id": 23,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 10,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "254:2:0"
+            },
+            "returnParameters": {
+              "id": 11,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "257:0:0"
+            },
+            "scope": 53,
+            "src": "243:185:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "internal"
+          },
+          {
+            "baseFunctions": [
+              67
+            ],
+            "body": {
+              "id": 31,
+              "nodeType": "Block",
+              "src": "497:31:0",
+              "statements": [
+                {
+                  "expression": {
+                    "hexValue": "66616c7365",
+                    "id": 29,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "bool",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "515:5:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "value": "false"
+                  },
+                  "functionReturnParameters": 28,
+                  "id": 30,
+                  "nodeType": "Return",
+                  "src": "508:12:0"
+                }
+              ]
+            },
+            "functionSelector": "a6f2ae3a",
+            "id": 32,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "buy",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 25,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "466:8:0"
+            },
+            "parameters": {
+              "id": 24,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "448:2:0"
+            },
+            "returnParameters": {
+              "id": 28,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 27,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 32,
+                  "src": "491:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 26,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "491:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "490:6:0"
+            },
+            "scope": 53,
+            "src": "436:92:0",
+            "stateMutability": "payable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              73
+            ],
+            "body": {
+              "id": 41,
+              "nodeType": "Block",
+              "src": "612:32:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 39,
+                    "name": "status",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 9,
+                    "src": "630:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "functionReturnParameters": 38,
+                  "id": 40,
+                  "nodeType": "Return",
+                  "src": "623:13:0"
+                }
+              ]
+            },
+            "functionSelector": "be9a6555",
+            "id": 42,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "start",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 34,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "568:8:0"
+            },
+            "parameters": {
+              "id": 33,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "550:2:0"
+            },
+            "returnParameters": {
+              "id": 38,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 37,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 42,
+                  "src": "585:25:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                    "typeString": "enum InitialCoinOfferingStatus"
+                  },
+                  "typeName": {
+                    "id": 36,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 35,
+                      "name": "InitialCoinOfferingStatus",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 59,
+                      "src": "585:25:0"
+                    },
+                    "referencedDeclaration": 59,
+                    "src": "585:25:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "584:27:0"
+            },
+            "scope": 53,
+            "src": "536:108:0",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              79
+            ],
+            "body": {
+              "id": 51,
+              "nodeType": "Block",
+              "src": "732:32:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 49,
+                    "name": "status",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 9,
+                    "src": "750:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "functionReturnParameters": 48,
+                  "id": 50,
+                  "nodeType": "Return",
+                  "src": "743:13:0"
+                }
+              ]
+            },
+            "functionSelector": "4e69d560",
+            "id": 52,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getStatus",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 44,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "688:8:0"
+            },
+            "parameters": {
+              "id": 43,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "670:2:0"
+            },
+            "returnParameters": {
+              "id": 48,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 47,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 52,
+                  "src": "705:25:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                    "typeString": "enum InitialCoinOfferingStatus"
+                  },
+                  "typeName": {
+                    "id": 46,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 45,
+                      "name": "InitialCoinOfferingStatus",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 59,
+                      "src": "705:25:0"
+                    },
+                    "referencedDeclaration": 59,
+                    "src": "705:25:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_InitialCoinOfferingStatus_$59",
+                      "typeString": "enum InitialCoinOfferingStatus"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "704:27:0"
+            },
+            "scope": 53,
+            "src": "652:112:0",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          }
+        ],
+        "scope": 54,
+        "src": "79:698:0"
+      }
+    ],
+    "src": "0:777:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.0+commit.c7dfd78e.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-10-19T14:22:46.079Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
