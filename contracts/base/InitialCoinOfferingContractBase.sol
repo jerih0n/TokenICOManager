@@ -5,8 +5,7 @@ pragma solidity ^0.8.0;
 import "../interfaces/IInicialCoinOffering.sol";
 import "../interfaces/IERC20TokenHandler.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
 
 //Declare the base logic for ICO contract
 abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
