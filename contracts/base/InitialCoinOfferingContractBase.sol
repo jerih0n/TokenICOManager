@@ -18,9 +18,8 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
     uint256 private startDateTimestamp; //startDate of the ICO in second
     uint256 private endDateTimestamp; //end Date of the ICO in second
     uint256 private blockTimeStamp; //The block time stamp at the moment of deploy.
-    address internal contractAddress;
+    address internal tokenAddress;
     uint256 private _tokenSupply;
-    IERC20TokenHandler tokenHander;
 
     modifier onlyOwner {
         require(msg.sender == owner, "Access Denied");
@@ -61,8 +60,10 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         startDateTimestamp = _startDateTimestamp;
         endDateTimestamp = _endDateTimeStamp;
 
-        tokenHander = _setERC20TokenHandler(_tokenAddress);
-        require(tokenHander.isERC20Token(), "Given address is not ERC20 Token or the owner of the contract is not the ICO creator");
+        IERC20TokenHandler tokenHandler = _setERC20TokenHandler(_tokenAddress);
+
+        require(tokenHandler.isERC20Token(), "Given address is not ERC20 Token or the owner of the contract is not the ICO creator");
+        tokenAddress = _tokenAddress;
 
     }
 
@@ -77,7 +78,9 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
 
         //transafer token to sender address
 
-        require(tokenHander.transfer(msg.sender, tokensToBeSend),"Error On Transfer. Reverting");
+        IERC20TokenHandler tokenHandler = _setERC20TokenHandler(tokenAddress);
+
+        require(tokenHandler.transfer(msg.sender, tokensToBeSend),"Error On Transfer. Reverting");
         
         return true;
     }
@@ -108,12 +111,6 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
     function _getTokenAmount(uint256 ethAmount) internal virtual view returns(uint256 tokenAmount) {
 
         return _getRate(ethAmount); // default 1:1 -> 1 eth for one ERC20 token
-    }
-
-
-    function getERC20TokenHandler() public view virtual  override returns(IERC20TokenHandler) {
-
-        return tokenHander;
     }
 
     //Implement the required IERC20TokenHandler
