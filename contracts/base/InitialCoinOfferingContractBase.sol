@@ -2,19 +2,19 @@
 
 pragma solidity ^0.8.0;
 
-import "../interfaces/IInicialCoinOffering.sol";
+import "../interfaces/ICrowdfunding.sol";
 import "../interfaces/IERC20TokenHandler.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
 //Declare the base logic for ICO contract
-abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
+abstract contract CrowdfundingBase is ICrowdfunding {
 
     using SafeMath for uint256;
 
 
     address payable private owner;
-    InitialCoinOfferingStatus private status;
+    CrowdfundingStatus private status;
     uint256 private startDateTimestamp; //startDate of the ICO in second
     uint256 private endDateTimestamp; //end Date of the ICO in second
     uint256 private blockTimeStamp; //The block time stamp at the moment of deploy.
@@ -26,7 +26,7 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         _;
     }
     modifier started {
-        require(status == InitialCoinOfferingStatus.InProgress, "The ICO is not started yet!");
+        require(status == CrowdfundingStatus.InProgress, "The ICO is not started yet!");
         _;
     }
 
@@ -36,7 +36,7 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
     }
 
     modifier notStarted {
-        require(status == InitialCoinOfferingStatus.NotStarted , "The ICO is either in progress or finished");
+        require(status == CrowdfundingStatus.NotStarted , "The ICO is either in progress or finished");
         _;
     }
 
@@ -49,7 +49,7 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
     constructor (uint256 _startDateTimestamp, uint256 _endDateTimeStamp, address _tokenAddress) {
 
         //On Deploy the ICO is NOT Started
-        status = InitialCoinOfferingStatus.NotStarted; 
+        status = CrowdfundingStatus.NotStarted; 
         owner = payable(msg.sender); //setting the owner of the ICO 
         blockTimeStamp = block.timestamp; //set the last block timestamp
 
@@ -85,23 +85,23 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         return true;
     }
 
-    function start() public virtual override onlyOwner notStarted returns(InitialCoinOfferingStatus) {
+    function start() public virtual override onlyOwner notStarted returns(CrowdfundingStatus) {
 
-        status = InitialCoinOfferingStatus.InProgress;
+        status = CrowdfundingStatus.InProgress;
 
         emit IcoStart(startDateTimestamp, endDateTimestamp);
 
         return status;
     }
 
-    function getStatus() public virtual override returns(InitialCoinOfferingStatus) {
+    function getStatus() public virtual override returns(CrowdfundingStatus) {
 
         return status;
     }
 
-    function end() public virtual override onlyOwner icoCanExpire returns(InitialCoinOfferingStatus) {
+    function end() public virtual override onlyOwner icoCanExpire returns(CrowdfundingStatus) {
 
-        status = InitialCoinOfferingStatus.Finished;
+        status = CrowdfundingStatus.Finished;
 
         emit IcoEnd(endDateTimestamp);
 
