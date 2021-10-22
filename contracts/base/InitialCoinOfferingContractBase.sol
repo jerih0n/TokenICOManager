@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "../interfaces/IInicialCoinOffering.sol";
+import "../interfaces/IERC20TokenHandler.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -20,6 +21,7 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
     uint256 private blockTimeStamp; //The block time stamp at the moment of deploy.
     address internal contractAddress;
     uint256 private _tokenSupply;
+    IERC20TokenHandler tokenHander;
 
     modifier onlyOwner {
         require(msg.sender == owner, "Access Denied");
@@ -45,7 +47,8 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         require(_sender.balance > _amount, "Insufficient balance");
         _;
     }
-    constructor (uint256 _startDateTimestamp, uint256 _endDateTimeStamp, address _contractAddress) {
+
+    constructor (uint256 _startDateTimestamp, uint256 _endDateTimeStamp, address _tokenAddress) {
 
         //On Deploy the ICO is NOT Started
         status = InitialCoinOfferingStatus.NotStarted; 
@@ -59,25 +62,25 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         startDateTimestamp = _startDateTimestamp;
         endDateTimestamp = _endDateTimeStamp;
 
-        //TODO: check if the address is ERC20 
+        tokenHander = _setERC20TokenHandler(_tokenAddress);
+        require(tokenHander.isERC20Token(), "Given address is not ERC20 Token or the owner of the contract is not the ICO creator");
 
-        require(_isERC20Token(_contractAddress), "Given address is not ERC20 Token or the owner of the contract is not the ICO creator");
-
-        contractAddress = _contractAddress;
     }
 
     
     function buy() public payable virtual override started canPay(msg.sender, msg.value) returns(bool) {      
         
-        uint256 tokensToBeSend = getTokenAmount(msg.value);
+        uint256 tokensToBeSend = _getTokenAmount(msg.value);
+
         require(tokensToBeSend > 0, "Not Enought EHT amount for 1 token");
 
         owner.transfer(msg.value); // transfering the amount to token address
 
         //transafer token to sender address
 
+        require(tokenHander.transfer(msg.sender, tokensToBeSend),"Error On Transfer. Reverting");
         
-        return false;
+        return true;
     }
 
     function start() public virtual override onlyOwner notStarted returns(InitialCoinOfferingStatus) {
@@ -103,39 +106,23 @@ abstract contract InitialCoinOfferingConractBase is IInicialCoinOffering {
         return status;
     }
 
-    function getTokenAmount(uint256 ethAmount) internal virtual view returns(uint256 tokenAmount) {
+    function _getTokenAmount(uint256 ethAmount) internal virtual view returns(uint256 tokenAmount) {
 
-        return getRate(ethAmount); // default 1:1 -> 1 eth for one ERC20 token
-    }
-
-    //check if token is ERC20 competible.
-    //the default check will check if the _address is ERC20 token by OpenZeppelin implementation
-    //override to perform different check
-    function _isERC20Token(address _address) internal virtual view returns(bool) {
-        IERC20 token  = IERC20(_address);
-        uint256 balance = token.balanceOf(owner);
-
-        if(balance == 0) {
-            return true;
-        }
-        return false;
+        return _getRate(ethAmount); // default 1:1 -> 1 eth for one ERC20 token
     }
 
 
-    function transferToken(address _tokenAddress, address _to, uint256 _amount) internal virtual{
-        //
-        IERC20 token  = IERC20(_tokenAddress);
+    function getERC20TokenHandler() public view virtual  override returns(IERC20TokenHandler) {
 
-        token.transfer(_to, _amount);
-        emit TransferToken(_to, _amount, _tokenAddress);
+        return tokenHander;
     }
-    function getOwner() internal view returns(address) {
-        return owner;
-    }
+
+    //Implement the required IERC20TokenHandler
+    function _setERC20TokenHandler(address _tokenAddress) internal virtual view returns(IERC20TokenHandler);
+
     //Implement logic for calculating the rate for exchanging ETH to Token
-    function getRate(uint256 ethAmount) internal virtual view returns(uint256 tokenAmount);
-
-    
+    function _getRate(uint256 ethAmount) internal virtual view returns(uint256 tokenAmount);
+ 
     event IcoStart(uint256 _start, uint256 _end);
     event IcoEnd(uint256 _end);
     event TransferEthereum(address _from, uint256 _value); 

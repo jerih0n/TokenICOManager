@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../enums/InitialCoinOfferingStatus.sol";
+import "./IERC20TokenHandler.sol";
 
 interface IInicialCoinOffering {
 
@@ -16,6 +17,8 @@ interface IInicialCoinOffering {
 
     //end the ICO
     function end() external returns(InitialCoinOfferingStatus);
+
+    function getERC20TokenHandler() external view returns(IERC20TokenHandler);
 
 }
 
