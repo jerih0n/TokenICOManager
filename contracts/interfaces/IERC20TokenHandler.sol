@@ -13,7 +13,7 @@ interface IERC20TokenHandler {
 
     function getTotalSupply() external view returns(uint256);
 
-    function getDecimals() external view returns(uint256);
+    function getDecimals() external view returns(uint8);
 
     function transfer(address _to, uint256 _amount) external payable returns(bool);
 

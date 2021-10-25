@@ -5,18 +5,14 @@ module.exports = {
   // see <http://truffleframework.com/docs/advanced/configuration>
   // for more details on how to specify configuration options!
   //
-  //networks: {
-      development: {
-        host: "127.0.0.1",
-        port: 8545,
-        network_id: 1337
-    },
-  //  test: {
-  //    host: "127.0.0.1",
-  //    port: 7545,
-  //    network_id: "*"
-  //  }
-  //},
+  networks: {
+    development: {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: 1337,
+      from:"0x0A99951194CB5c5577541200EB2DEAEcEf05C1C8" // 
+    }
+  },
   //
   // Truffle DB is currently disabled by default; to enable it, change enabled:
   // false to enabled: true. The default storage location can also be
@@ -29,14 +25,14 @@ module.exports = {
   // $ truffle migrate --reset --compile-all
   //
   // db: {
-    // enabled: false,
-    // host: "127.0.0.1",
-    // adapter: {
-    //   name: "sqlite",
-    //   settings: {
-    //     directory: ".db"
-    //   }
-    // }
+  // enabled: false,
+  // host: "127.0.0.1",
+  // adapter: {
+  //   name: "sqlite",
+  //   settings: {
+  //     directory: ".db"
+  //   }
+  // }
   // }
   compilers: {
     solc: {
@@ -44,3 +40,4 @@ module.exports = {
     }
   }
 };
+
