@@ -11,7 +11,8 @@ module.exports = async function (deployer, network, accounts) {
     //should be limited only for owner. In other words calling smart contracts with address different than owner my face limitations
     //3)gas: set the max amount of gass in wei to be payed. IF gass price goes beyoud this max amount the deploy will be revurted. the same rule for all eth transactions
      //deploy only on local ganache network !
-    deployer.deploy(TestToken,{overwrite: false});
+
+    deployer.deploy(TestToken);
     
     deployer.deploy(OpenZeppelinERC20TokenHandler, "0xEE726560Df01D06Bd164dd5066B3f84b5bC5f692", accounts[0]); 
     

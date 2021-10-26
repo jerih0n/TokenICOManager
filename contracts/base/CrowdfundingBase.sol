@@ -104,7 +104,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         IERC20TokenHandler tokenHandler = _setERC20TokenHandler(tokenAddress);
 
         require(
-            tokenHandler.transfer(msg.sender, tokensToBeSend),
+            tokenHandler.transferTo(msg.sender, tokensToBeSend),
             "Error On Transfer. Reverting"
         );
 

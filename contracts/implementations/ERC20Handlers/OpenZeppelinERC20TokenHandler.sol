@@ -33,7 +33,7 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
         return token.decimals();
     }
 
-    function transfer(address _to, uint256 _amount)
+    function transferTo(address _to, uint256 _amount)
         public
         payable
         override
@@ -52,5 +52,10 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
     function getSymbol() public view override returns (string memory) {
         ERC20 token = ERC20(tokenAddress);
         return token.symbol();
+    }
+    function getBalance(address _address) public view override returns (uint256) {
+         ERC20 token = ERC20(tokenAddress);
+         return token.balanceOf(_address);
+
     }
 }
