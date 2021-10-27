@@ -10,8 +10,9 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 abstract contract CrowdfundingBase is ICrowdfunding {
     using SafeMath for uint256;
 
+    CrowdfundingStatus internal status;
     address payable private owner;
-    CrowdfundingStatus private status;
+
     uint256 private startDateTimestamp; //startDate of the ICO in second
     uint256 private endDateTimestamp; //end Date of the ICO in second
     uint256 private blockTimeStamp; //The block time stamp at the moment of deploy.
@@ -20,29 +21,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Access Denied");
-        _;
-    }
-    modifier started() {
-        require(
-            status == CrowdfundingStatus.InProgress,
-            "The ICO is not started yet!"
-        );
-        _;
-    }
-
-    modifier icoCanExpire() {
-        require(
-            block.timestamp >= endDateTimestamp,
-            "ICO Cannot be ended earlier"
-        );
-        _;
-    }
-
-    modifier notStarted() {
-        require(
-            status == CrowdfundingStatus.NotStarted,
-            "The ICO is either in progress or finished"
-        );
         _;
     }
 
@@ -57,28 +35,11 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     event TransferEthereum(address _from, uint256 _value);
     event TransferToken(address _to, uint256 _value, address _tokenAddress);
 
-    constructor(
-        uint256 _startDateTimestamp,
-        uint256 _endDateTimeStamp,
-        address _tokenAddress
-    ) {
+    constructor(address _tokenAddress) {
         //On Deploy the ICO is NOT Started
         status = CrowdfundingStatus.NotStarted;
         owner = payable(msg.sender); //setting the owner of the ICO
         blockTimeStamp = block.timestamp; //set the last block timestamp
-
-        //basic validation of the dates
-        require(
-            blockTimeStamp <= startDateTimestamp,
-            "The ICO cannot start in the past"
-        );
-        require(
-            _startDateTimestamp < _endDateTimeStamp,
-            "Start date must be before End Date"
-        );
-
-        startDateTimestamp = _startDateTimestamp;
-        endDateTimestamp = _endDateTimeStamp;
 
         IERC20TokenHandler tokenHandler = _setERC20TokenHandler(_tokenAddress);
 
@@ -89,12 +50,12 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         tokenAddress = _tokenAddress;
     }
 
+    //TODO:
     function buy()
         public
         payable
         virtual
         override
-        started
         canPay(msg.sender, msg.value)
         returns (bool)
     {
@@ -110,45 +71,11 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         IERC20TokenHandler tokenHandler = _setERC20TokenHandler(tokenAddress);
 
-        tokenHandler.transfer(msg.sender, msg.value);
+        //tokenHandler.transfer(msg.sender, msg.value);
 
         emit TransferToken(msg.sender, msg.value, owner);
 
         return true;
-    }
-
-    function start()
-        public
-        virtual
-        override
-        onlyOwner
-        notStarted
-        returns (CrowdfundingStatus)
-    {
-        status = CrowdfundingStatus.InProgress;
-
-        emit IcoStart(startDateTimestamp, endDateTimestamp);
-
-        return status;
-    }
-
-    function getStatus() public virtual override returns (CrowdfundingStatus) {
-        return status;
-    }
-
-    function end()
-        public
-        virtual
-        override
-        onlyOwner
-        icoCanExpire
-        returns (CrowdfundingStatus)
-    {
-        status = CrowdfundingStatus.Finished;
-
-        emit IcoEnd(endDateTimestamp);
-
-        return status;
     }
 
     function _getTokenAmount(uint256 ethAmount)
@@ -157,7 +84,10 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         virtual
         returns (uint256 tokenAmount)
     {
-        return _getRate(ethAmount); // default 1:1 -> 1 eth for one ERC20 token
+        IERC20TokenHandler tokenHandler = _setERC20TokenHandler(tokenAddress);
+        return
+            ((ethAmount * (10**tokenHandler.getDecimals())) / 1 ether) *
+            _getRate(ethAmount);
     }
 
     //Implement the required IERC20TokenHandler
@@ -173,4 +103,8 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         view
         virtual
         returns (uint256 tokenAmount);
+
+    function getStatus() public virtual override returns (CrowdfundingStatus) {
+        return status;
+    }
 }

@@ -1,6 +1,13 @@
 
 const TestToken = artifacts.require("TestToken");
 const OpenZeppelinERC20TokenHandler = artifacts.require("OpenZeppelingERC20TokenHandler");
+const TestBasicCrowdFunding = artifacts.require("TestBasicCrowdFunding");
+
+Date.prototype.addDays = function (days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
 
 //Deploying in main net will cost you real ETH is gass FEE! Be carfull 
 module.exports = async function (deployer, network, accounts) {
@@ -15,7 +22,14 @@ module.exports = async function (deployer, network, accounts) {
 
     deployer.then(async () => {
         await deployer.deploy(TestToken, { from: accounts[0] });
-        await deployer.deploy(OpenZeppelinERC20TokenHandler, TestToken.address, accounts[0])
+        await deployer.deploy(OpenZeppelinERC20TokenHandler, TestToken.address, accounts[0]);
+
+        const date = Date.now();
+        const startDate = new Date(date).getDay() + 1;
+        const endDate = new Date(date).getDay() + 2;
+        console.log(startDate);
+        console.log(endDate);
+        await deployer.deploy(TestBasicCrowdFunding, startDate, endDate, TestToken.address)
     })
 
 };
