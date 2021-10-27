@@ -15,9 +15,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
     uint256 private startDateTimestamp; //startDate of the ICO in second
     uint256 private endDateTimestamp; //end Date of the ICO in second
-    uint256 private blockTimeStamp; //The block time stamp at the moment of deploy.
     address internal tokenAddress;
-    uint256 private _tokenSupply;
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Access Denied");
@@ -39,7 +37,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         //On Deploy the ICO is NOT Started
         status = CrowdfundingStatus.NotStarted;
         owner = payable(msg.sender); //setting the owner of the ICO
-        blockTimeStamp = block.timestamp; //set the last block timestamp
 
         IERC20TokenHandler tokenHandler = _setERC20TokenHandler(_tokenAddress);
 

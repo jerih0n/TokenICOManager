@@ -23,13 +23,7 @@ module.exports = async function (deployer, network, accounts) {
     deployer.then(async () => {
         await deployer.deploy(TestToken, { from: accounts[0] });
         await deployer.deploy(OpenZeppelinERC20TokenHandler, TestToken.address, accounts[0]);
-
-        const date = Date.now();
-        const startDate = new Date(date).getDay() + 1;
-        const endDate = new Date(date).getDay() + 2;
-        console.log(startDate);
-        console.log(endDate);
-        await deployer.deploy(TestBasicCrowdFunding, startDate, endDate, TestToken.address)
+        await deployer.deploy(TestBasicCrowdFunding, TestToken.address)
     })
 
 };
