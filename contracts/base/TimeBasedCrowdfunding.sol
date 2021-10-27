@@ -37,6 +37,9 @@ abstract contract TimeBasedCrowdfunding is
         _;
     }
 
+    event IcoStart(uint256 _start, uint256 _end);
+    event IcoEnd(uint256 _end);
+
     constructor(
         uint256 _startDate,
         uint256 _endDate,

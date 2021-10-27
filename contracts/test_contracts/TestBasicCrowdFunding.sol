@@ -9,12 +9,13 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract TestBasicCrowdFunding is CrowdfundingBase {
     using SafeMath for uint256;
-    IERC20TokenHandler private _handler;
+
+    OpenZeppelingERC20TokenHandler internal _handler;
 
     constructor(address _tokenAddress) CrowdfundingBase(_tokenAddress) {
         _handler = new OpenZeppelingERC20TokenHandler(
             _tokenAddress,
-            msg.sender
+            _getSender()
         );
     }
 

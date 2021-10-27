@@ -12,9 +12,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
     CrowdfundingStatus internal status;
     address payable private owner;
-
-    uint256 private startDateTimestamp; //startDate of the ICO in second
-    uint256 private endDateTimestamp; //end Date of the ICO in second
     address internal tokenAddress;
 
     modifier onlyOwner() {
@@ -28,15 +25,13 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         _;
     }
 
-    event IcoStart(uint256 _start, uint256 _end);
-    event IcoEnd(uint256 _end);
     event TransferEthereum(address _from, uint256 _value);
     event TransferToken(address _to, uint256 _value, address _tokenAddress);
 
     constructor(address _tokenAddress) {
         //On Deploy the ICO is NOT Started
         status = CrowdfundingStatus.NotStarted;
-        owner = payable(msg.sender); //setting the owner of the ICO
+        owner = payable(_getSender()); //setting the owner of the ICO
 
         IERC20TokenHandler tokenHandler = _setERC20TokenHandler(_tokenAddress);
 
@@ -87,6 +82,14 @@ abstract contract CrowdfundingBase is ICrowdfunding {
             _getRate(ethAmount);
     }
 
+    function getStatus() public virtual override returns (CrowdfundingStatus) {
+        return status;
+    }
+
+    function _getSender() public view returns (address) {
+        return msg.sender;
+    }
+
     //Implement the required IERC20TokenHandler
     function _setERC20TokenHandler(address _tokenAddress)
         internal
@@ -100,8 +103,4 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         view
         virtual
         returns (uint256 tokenAmount);
-
-    function getStatus() public virtual override returns (CrowdfundingStatus) {
-        return status;
-    }
 }
