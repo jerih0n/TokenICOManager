@@ -10,11 +10,8 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
     address private tokenAddress;
 
     constructor(address _tokenAddress, address _callerAddress) {
-        ERC20 token = ERC20(_tokenAddress);
-        require(
-            token.balanceOf(_callerAddress) > 0,
-            "ERROR. Provided address is not ERC20 token or caller address cannot operate with the amount"
-        );
+        //ERC20 token = ERC20(_tokenAddress);
+
         tokenAddress = _tokenAddress;
         callerAddress = _callerAddress;
     }
@@ -27,21 +24,11 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
         );
         return true;
     }
-    function getDecimals() public view override returns(uint8) {
+
+    function getDecimals() public view override returns (uint8) {
         ERC20 token = ERC20(tokenAddress);
 
         return token.decimals();
-    }
-
-    function transferTo(address _to, uint256 _amount)
-        public
-        payable
-        override
-        returns (bool)
-    {
-        ERC20 token = ERC20(tokenAddress);
-        require(token.transfer(_to, _amount),"ERROR.");
-        return true;
     }
 
     function getTotalSupply() public view override returns (uint256) {
@@ -53,9 +40,14 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
         ERC20 token = ERC20(tokenAddress);
         return token.symbol();
     }
-    function getBalance(address _address) public view override returns (uint256) {
-         ERC20 token = ERC20(tokenAddress);
-         return token.balanceOf(_address);
 
+    function getBalance(address _address)
+        public
+        view
+        override
+        returns (uint256)
+    {
+        ERC20 token = ERC20(tokenAddress);
+        return token.balanceOf(_address);
     }
 }

@@ -52,6 +52,11 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         _;
     }
 
+    event IcoStart(uint256 _start, uint256 _end);
+    event IcoEnd(uint256 _end);
+    event TransferEthereum(address _from, uint256 _value);
+    event TransferToken(address _to, uint256 _value, address _tokenAddress);
+
     constructor(
         uint256 _startDateTimestamp,
         uint256 _endDateTimeStamp,
@@ -97,16 +102,17 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         require(tokensToBeSend > 0, "Not Enought EHT amount for 1 token");
 
+        emit TransferEthereum(msg.sender, msg.value);
+
         owner.transfer(msg.value); // transfering the amount to token address
 
         //transafer token to sender address
 
         IERC20TokenHandler tokenHandler = _setERC20TokenHandler(tokenAddress);
 
-        require(
-            tokenHandler.transferTo(msg.sender, tokensToBeSend),
-            "Error On Transfer. Reverting"
-        );
+        tokenHandler.transfer(msg.sender, msg.value);
+
+        emit TransferToken(msg.sender, msg.value, owner);
 
         return true;
     }
@@ -167,9 +173,4 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         view
         virtual
         returns (uint256 tokenAmount);
-
-    event IcoStart(uint256 _start, uint256 _end);
-    event IcoEnd(uint256 _end);
-    event TransferEthereum(address _from, uint256 _value);
-    event TransferToken(address _to, uint256 _value, address _tokenAddress);
 }
