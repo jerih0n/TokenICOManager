@@ -19,6 +19,26 @@ contract TestBasicCrowdFunding is CrowdfundingBase {
         );
     }
 
+    function test_getRate(uint256 ethAmount) public view returns (uint256) {
+        return _getRate(ethAmount);
+    }
+
+    function test_getERC20TokenHandler(address _tokenAddress)
+        public
+        view
+        returns (IERC20TokenHandler)
+    {
+        return _getERC20TokenHandler(_tokenAddress);
+    }
+
+    function test_getTokenAmount(uint256 ethAmount)
+        public
+        view
+        returns (uint256)
+    {
+        return super._getTokenAmount(ethAmount);
+    }
+
     function _getRate(uint256 ethAmount)
         internal
         view
@@ -29,12 +49,16 @@ contract TestBasicCrowdFunding is CrowdfundingBase {
         return 1000; //1 eth for 1000;
     }
 
-    function _setERC20TokenHandler(address _tokenAddress)
+    function _getERC20TokenHandler(address _tokenAddress)
         internal
         view
         override
         returns (IERC20TokenHandler)
     {
         return _handler;
+    }
+
+    function getSender() public view returns (address) {
+        return super._getSender();
     }
 }

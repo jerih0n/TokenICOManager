@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 import "../interfaces/ICrowdfunding.sol";
 import "../interfaces/IERC20TokenHandler.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../lib/Calculations.sol";
 
 //Declare the base logic for ICO contract
 abstract contract CrowdfundingBase is ICrowdfunding {
@@ -32,13 +33,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         //On Deploy the ICO is NOT Started
         status = CrowdfundingStatus.NotStarted;
         owner = payable(_getSender()); //setting the owner of the ICO
-
-        IERC20TokenHandler tokenHandler = _setERC20TokenHandler(_tokenAddress);
-
-        require(
-            tokenHandler.isERC20Token(),
-            "Given address is not ERC20 Token or the owner of the contract is not the ICO creator"
-        );
         tokenAddress = _tokenAddress;
     }
 
@@ -61,7 +55,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         //transafer token to sender address
 
-        IERC20TokenHandler tokenHandler = _setERC20TokenHandler(tokenAddress);
+        IERC20TokenHandler tokenHandler = _getERC20TokenHandler(tokenAddress);
 
         //tokenHandler.transfer(msg.sender, msg.value);
 
@@ -76,22 +70,26 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         virtual
         returns (uint256 tokenAmount)
     {
-        IERC20TokenHandler tokenHandler = _setERC20TokenHandler(tokenAddress);
+        IERC20TokenHandler tokenHandler = _getERC20TokenHandler(tokenAddress);
+
         return
-            ((ethAmount * (10**tokenHandler.getDecimals())) / 1 ether) *
-            _getRate(ethAmount);
+            Calculations.calculatetTokenAmount(
+                ethAmount,
+                tokenHandler.getDecimals(),
+                _getRate(ethAmount)
+            );
     }
 
     function getStatus() public virtual override returns (CrowdfundingStatus) {
         return status;
     }
 
-    function _getSender() public view returns (address) {
+    function _getSender() internal view returns (address) {
         return msg.sender;
     }
 
     //Implement the required IERC20TokenHandler
-    function _setERC20TokenHandler(address _tokenAddress)
+    function _getERC20TokenHandler(address _tokenAddress)
         internal
         view
         virtual
