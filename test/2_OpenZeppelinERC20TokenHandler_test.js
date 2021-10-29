@@ -1,5 +1,4 @@
 
-
 const OpenZeppelinERC20TokenHandler = artifacts.require("OpenZeppelingERC20TokenHandler");
 const TestToken = artifacts.require("TestToken");
 const BN = web3.utils.BN;

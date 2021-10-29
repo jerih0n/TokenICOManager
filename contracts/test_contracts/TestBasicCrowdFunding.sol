@@ -31,12 +31,9 @@ contract TestBasicCrowdFunding is CrowdfundingBase {
         return _getERC20TokenHandler(_tokenAddress);
     }
 
-    function test_getTokenAmount(uint256 ethAmount)
-        public
-        view
-        returns (uint256)
-    {
-        return super._getTokenAmount(ethAmount);
+    function test_getTokenAmount(uint256 ethAmount) public returns (uint256) {
+        uint256 tokenAmount = super._getTokenAmount(ethAmount);
+        return tokenAmount;
     }
 
     function _getRate(uint256 ethAmount)

@@ -1,8 +1,12 @@
+const BigNumber = require("bignumber.js");
+
 
 //test the basic functionality of the Crowdfunding cotract
 const TestToken = artifacts.require("TestToken");
 const OpenZeppelinERC20TokenHandler = artifacts.require("OpenZeppelingERC20TokenHandler");
 const TestBaseCrowdfundingContract = artifacts.require("TestBasicCrowdFunding")
+const Calculations = artifacts.require("Calculations");
+
 
 
 contract('TestBaseCrowdfundingContract', (accounts) => {
@@ -40,20 +44,39 @@ contract('TestBaseCrowdfundingContract', (accounts) => {
         assert.equal(rete, rateFromContract.toNumber(), `${rateFromContract} rate returned from call`)
     });
 
-    it(`should calculate token amount properly t1`, async () => {
+    it(`should calculate token amount properly for 1 eth`, async () => {
 
         const testToken = await TestToken.deployed();
-        const openZeppelinERC20TokenHandler = await OpenZeppelinERC20TokenHandler.deployed(testToken.address, accounts[0])
         const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, { from: accounts[0] });
 
-        const wei = 10 ** 18; //1 eth
-        console.log(wei);
+        var expectedTokenAmount = new BigNumber(`${1000000000000000000000}`); //1000e18 1000 tokens for 1 eth
 
-        const amountFromToken = await testBaseCrowdfundingContract._getTokenAmount(wei);
+        var tokenAmount = new BigNumber(`${await testBaseCrowdfundingContract.test_getTokenAmount.call(web3.utils.toWei("1", "ether"))}`);//1e18 wei
 
-        const tokenAmountThatShouldBeGet = ((wei * (10 ** await openZeppelinERC20TokenHandler.getDecimals())) / 10) * rateFromContract;
+        assert.isTrue(tokenAmount.eq(expectedTokenAmount), "should calculate correctly the token amount")
+    });
 
+    it(`should calculate token amount properly for 10 eth`, async () => {
 
-        assert.equal(amountFromToken, tokenAmountThatShouldBeGet, `should calculate correctly the token amount`)
+        const testToken = await TestToken.deployed();
+        const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, { from: accounts[0] });
+
+        var expectedTokenAmount = new BigNumber(`${10 * 1000000000000000000000}`); //1000e18 1000 tokens for 1 eth
+
+        var tokenAmount = new BigNumber(`${await testBaseCrowdfundingContract.test_getTokenAmount.call(web3.utils.toWei("10", "ether"))}`);//1e18 wei
+
+        assert.isTrue(tokenAmount.eq(expectedTokenAmount), "should calculate correctly the token amount")
+    });
+
+    it(`should calculate token amount properly for 0.09 eth`, async () => {
+
+        const testToken = await TestToken.deployed();
+        const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, { from: accounts[0] });
+
+        var expectedTokenAmount = new BigNumber(`${0.09 * 1000000000000000000000}`); //1000e18 1000 tokens for 1 eth
+
+        var tokenAmount = new BigNumber(`${await testBaseCrowdfundingContract.test_getTokenAmount.call(web3.utils.toWei("0.09", "ether"))}`);//1e18 wei
+
+        assert.isTrue(tokenAmount.eq(expectedTokenAmount), "should calculate correctly the token amount")
     });
 });
