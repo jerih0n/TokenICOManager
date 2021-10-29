@@ -4,16 +4,37 @@ pragma solidity ^0.8.0;
 
 import "../../interfaces/IERC20TokenHandler.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "../../lib/Calculations.sol";
 
 contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
+    address private owner;
     address private callerAddress;
     address private tokenAddress;
+    bool private isAmountLoaded;
+
+    modifier canLoad() {
+        require(!isAmountLoaded, "Amount Already Loaded");
+        _;
+    }
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Access Denied");
+        _;
+    }
+
+    modifier betweenZeroAndHundread(uint8 _totalSupplyPersents) {
+        require(
+            _totalSupplyPersents > 1 && _totalSupplyPersents <= 100,
+            "Invalid persents! Value should be between 1 and 100"
+        );
+        _;
+    }
 
     constructor(address _tokenAddress, address _callerAddress) {
         //ERC20 token = ERC20(_tokenAddress);
-
+        isAmountLoaded = false;
         tokenAddress = _tokenAddress;
         callerAddress = _callerAddress;
+        owner = msg.sender;
     }
 
     function isERC20Token() public view override returns (bool) {
@@ -49,5 +70,31 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
     {
         ERC20 token = ERC20(tokenAddress);
         return token.balanceOf(_address);
+    }
+
+    //call after initialization of the smart contract
+    //pass the % of the total amount that are be used for ICO
+    function loadBalance(uint8 _totalSupplyPersents, uint128 _scale)
+        public
+        onlyOwner
+        canLoad
+        betweenZeroAndHundread(_totalSupplyPersents)
+    {
+        ERC20 token = ERC20(tokenAddress);
+
+        uint256 tokenSupply = token.totalSupply();
+
+        uint256 tokensForDistribution = Calculations.mulScale(
+            tokenSupply,
+            _totalSupplyPersents,
+            _scale
+        );
+
+        require(
+            tokensForDistribution >= tokenSupply,
+            "Tokens for distribution should be less or equal to max supply"
+        );
+
+        token.transfer(callerAddress, tokensForDistribution);
     }
 }

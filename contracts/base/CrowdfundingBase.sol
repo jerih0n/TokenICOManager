@@ -34,6 +34,13 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         status = CrowdfundingStatus.NotStarted;
         owner = payable(_getSender()); //setting the owner of the ICO
         tokenAddress = _tokenAddress;
+
+        IERC20TokenHandler tokenHandler = _getERC20TokenHandler(tokenAddress);
+
+        tokenHandler.loadBalance(
+            _getPercentsOfTotalSupplyForDistribution(),
+            100
+        ); // percents
     }
 
     //TODO:
@@ -84,8 +91,20 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         return status;
     }
 
+    function getEthBalance() public view onlyOwner returns (uint256) {
+        return address(this).balance;
+    }
+
     function _getSender() internal view returns (address) {
         return msg.sender;
+    }
+
+    function _getPercentsOfTotalSupplyForDistribution()
+        internal
+        view
+        returns (uint8)
+    {
+        return 100;
     }
 
     //Implement the required IERC20TokenHandler

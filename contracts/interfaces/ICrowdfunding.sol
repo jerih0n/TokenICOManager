@@ -10,4 +10,6 @@ interface ICrowdfunding {
 
     //return the status of ICO
     function getStatus() external returns (CrowdfundingStatus);
+
+    function getEthBalance() external view returns (uint256);
 }

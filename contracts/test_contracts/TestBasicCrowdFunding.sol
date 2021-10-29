@@ -15,7 +15,7 @@ contract TestBasicCrowdFunding is CrowdfundingBase {
     constructor(address _tokenAddress) CrowdfundingBase(_tokenAddress) {
         _handler = new OpenZeppelingERC20TokenHandler(
             _tokenAddress,
-            _getSender()
+            address(this)
         );
     }
 

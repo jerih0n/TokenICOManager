@@ -23,6 +23,7 @@ module.exports = async function (deployer, network, accounts) {
     deployer.then(async () => {
         //await deployer.deploy(Calculations, { from: accounts[0], overwrite: false });
         await deployer.deploy(TestToken, { from: accounts[0] });
+        await deployer.link(Calculations, OpenZeppelinERC20TokenHandler)
         await deployer.deploy(OpenZeppelinERC20TokenHandler, TestToken.address, accounts[0]);
         await deployer.link(Calculations, TestBasicCrowdFunding);
         await deployer.deploy(TestBasicCrowdFunding, TestToken.address, { from: accounts[0] })

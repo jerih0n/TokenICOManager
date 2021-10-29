@@ -17,4 +17,6 @@ interface IERC20TokenHandler {
     function getSymbol() external view returns (string memory);
 
     function getBalance(address _address) external view returns (uint256);
+
+    function loadBalance(uint8 _totalSupplyPersents, uint128 _scale) external;
 }
