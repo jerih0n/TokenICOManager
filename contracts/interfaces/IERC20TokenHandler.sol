@@ -7,7 +7,9 @@
 */
 pragma solidity ^0.8.0;
 
-interface IERC20TokenHandler {
+import "./IWrapper.sol";
+
+interface IERC20TokenHandler is IWrapper {
     function isERC20Token() external view returns (bool);
 
     function getTotalSupply() external view returns (uint256);

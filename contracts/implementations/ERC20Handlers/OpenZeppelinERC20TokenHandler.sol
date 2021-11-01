@@ -29,15 +29,30 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
         _;
     }
 
-    constructor(address _tokenAddress, address _callerAddress) {
+    modifier wrapped() {
+        require(
+            tokenAddress != address(0),
+            "No token address provided. wrap function call required"
+        );
+        _;
+    }
+
+    constructor() {
         //ERC20 token = ERC20(_tokenAddress);
         isAmountLoaded = false;
-        tokenAddress = _tokenAddress;
-        callerAddress = _callerAddress;
         owner = msg.sender;
     }
 
-    function isERC20Token() public view override returns (bool) {
+    function wrap(address _address) public override {
+        require(_address != address(0), "Cannot set to that address address");
+        tokenAddress = _address;
+    }
+
+    function unwrap() public override wrapped {
+        tokenAddress = address(0);
+    }
+
+    function isERC20Token() public view override wrapped returns (bool) {
         ERC20 token = ERC20(tokenAddress);
         require(
             token.balanceOf(callerAddress) > 0,
@@ -46,18 +61,18 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
         return true;
     }
 
-    function getDecimals() public view override returns (uint8) {
+    function getDecimals() public view override wrapped returns (uint8) {
         ERC20 token = ERC20(tokenAddress);
 
         return token.decimals();
     }
 
-    function getTotalSupply() public view override returns (uint256) {
+    function getTotalSupply() public view override wrapped returns (uint256) {
         ERC20 token = ERC20(tokenAddress);
         return token.totalSupply();
     }
 
-    function getSymbol() public view override returns (string memory) {
+    function getSymbol() public view override wrapped returns (string memory) {
         ERC20 token = ERC20(tokenAddress);
         return token.symbol();
     }
@@ -66,6 +81,7 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
         public
         view
         override
+        wrapped
         returns (uint256)
     {
         ERC20 token = ERC20(tokenAddress);
@@ -79,6 +95,7 @@ contract OpenZeppelingERC20TokenHandler is IERC20TokenHandler {
         onlyOwner
         canLoad
         betweenZeroAndHundread(_totalSupplyPersents)
+        wrapped
     {
         ERC20 token = ERC20(tokenAddress);
 

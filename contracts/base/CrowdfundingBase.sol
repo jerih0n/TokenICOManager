@@ -14,6 +14,8 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     CrowdfundingStatus internal status;
     address payable private owner;
     address internal tokenAddress;
+    address internal tokenHandlerAddress;
+    IERC20TokenHandler internal _tokenHandler;
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Access Denied");
@@ -29,15 +31,19 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     event TransferEthereum(address _from, uint256 _value);
     event TransferToken(address _to, uint256 _value, address _tokenAddress);
 
-    constructor(address _tokenAddress) {
+    constructor(address _tokenAddress, address _tokenHandlerAddress) {
         //On Deploy the ICO is NOT Started
         status = CrowdfundingStatus.NotStarted;
         owner = payable(_getSender()); //setting the owner of the ICO
         tokenAddress = _tokenAddress;
+        tokenHandlerAddress = _tokenHandlerAddress;
 
-        IERC20TokenHandler tokenHandler = _getERC20TokenHandler(tokenAddress);
+        _tokenHandler = _getERC20TokenHandler(
+            tokenAddress,
+            tokenHandlerAddress
+        );
 
-        tokenHandler.loadBalance(
+        _tokenHandler.loadBalance(
             _getPercentsOfTotalSupplyForDistribution(),
             100
         ); // percents
@@ -62,8 +68,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         //transafer token to sender address
 
-        IERC20TokenHandler tokenHandler = _getERC20TokenHandler(tokenAddress);
-
         //tokenHandler.transfer(msg.sender, msg.value);
 
         emit TransferToken(msg.sender, msg.value, owner);
@@ -77,12 +81,10 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         virtual
         returns (uint256 tokenAmount)
     {
-        IERC20TokenHandler tokenHandler = _getERC20TokenHandler(tokenAddress);
-
         return
             Calculations.calculatetTokenAmount(
                 ethAmount,
-                tokenHandler.getDecimals(),
+                _tokenHandler.getDecimals(),
                 _getRate(ethAmount)
             );
     }
@@ -101,18 +103,18 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
     function _getPercentsOfTotalSupplyForDistribution()
         internal
-        view
+        pure
+        virtual
         returns (uint8)
     {
         return 100;
     }
 
     //Implement the required IERC20TokenHandler
-    function _getERC20TokenHandler(address _tokenAddress)
-        internal
-        view
-        virtual
-        returns (IERC20TokenHandler);
+    function _getERC20TokenHandler(
+        address _tokenAddress,
+        address _tokenHandlerAddress
+    ) internal virtual returns (IERC20TokenHandler);
 
     //Implement logic for calculating the rate for exchanging ETH to Token
     function _getRate(uint256 ethAmount)

@@ -10,14 +10,9 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract TestBasicCrowdFunding is CrowdfundingBase {
     using SafeMath for uint256;
 
-    OpenZeppelingERC20TokenHandler internal _handler;
-
-    constructor(address _tokenAddress) CrowdfundingBase(_tokenAddress) {
-        _handler = new OpenZeppelingERC20TokenHandler(
-            _tokenAddress,
-            address(this)
-        );
-    }
+    constructor(address _tokenAddress, address _tokenHandlerAddress)
+        CrowdfundingBase(_tokenAddress, _tokenHandlerAddress)
+    {}
 
     function test_getRate(uint256 ethAmount) public view returns (uint256) {
         return _getRate(ethAmount);
@@ -25,13 +20,16 @@ contract TestBasicCrowdFunding is CrowdfundingBase {
 
     function test_getERC20TokenHandler(address _tokenAddress)
         public
-        view
         returns (IERC20TokenHandler)
     {
-        return _getERC20TokenHandler(_tokenAddress);
+        return _getERC20TokenHandler(_tokenAddress, tokenHandlerAddress);
     }
 
-    function test_getTokenAmount(uint256 ethAmount) public returns (uint256) {
+    function test_getTokenAmount(uint256 ethAmount)
+        public
+        view
+        returns (uint256)
+    {
         uint256 tokenAmount = super._getTokenAmount(ethAmount);
         return tokenAmount;
     }
@@ -46,13 +44,15 @@ contract TestBasicCrowdFunding is CrowdfundingBase {
         return 1000; //1 eth for 1000;
     }
 
-    function _getERC20TokenHandler(address _tokenAddress)
-        internal
-        view
-        override
-        returns (IERC20TokenHandler)
-    {
-        return _handler;
+    function _getERC20TokenHandler(
+        address _tokenAddress,
+        address _tokenHandlerAddress
+    ) internal override returns (IERC20TokenHandler) {
+        OpenZeppelingERC20TokenHandler handler = OpenZeppelingERC20TokenHandler(
+            _tokenHandlerAddress
+        );
+        handler.wrap(_tokenAddress);
+        return handler;
     }
 
     function getSender() public view returns (address) {

@@ -43,8 +43,9 @@ abstract contract TimeBasedCrowdfunding is
     constructor(
         uint256 _startDate,
         uint256 _endDate,
-        address _tokenAddress
-    ) CrowdfundingBase(_tokenAddress) {
+        address _tokenAddress,
+        address _tokenHandlerAddress
+    ) CrowdfundingBase(_tokenAddress, _tokenHandlerAddress) {
         //basic validation of the dates
         blockDateTime = block.timestamp;
 
