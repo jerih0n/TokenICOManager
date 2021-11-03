@@ -14,7 +14,7 @@ library Calculations {
     function mulScale(
         uint256 x,
         uint256 y,
-        uint128 scale
+        uint256 scale
     ) external pure returns (uint256) {
         uint256 a = x / scale;
         uint256 b = x % scale;

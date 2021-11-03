@@ -2,20 +2,22 @@
 
 pragma solidity ^0.8.0;
 
-import "../interfaces/ICrowdfunding.sol";
-import "../interfaces/IERC20TokenHandler.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "../interfaces/ICrowdfunding.sol";
 import "../lib/Calculations.sol";
 
 //Declare the base logic for ICO contract
 abstract contract CrowdfundingBase is ICrowdfunding {
     using SafeMath for uint256;
 
+    uint256 constant DEFAULT_PERCENTAGE_SCALE = 100;
+
     CrowdfundingStatus internal status;
     address payable private owner;
     address internal tokenAddress;
-    address internal tokenHandlerAddress;
-    IERC20TokenHandler internal _tokenHandler;
+    uint256 internal maxTokenAmountToBeDestributed;
+    mapping(address => uint256) internal contributers;
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Access Denied");
@@ -30,23 +32,35 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
     event TransferEthereum(address _from, uint256 _value);
     event TransferToken(address _to, uint256 _value, address _tokenAddress);
+    event ContractInitialized(address _self, CrowdfundingStatus status);
 
-    constructor(address _tokenAddress, address _tokenHandlerAddress) {
+    constructor(
+        address _tokenAddress,
+        uint8 _percentOfTotalSupplyToBeDistributed
+    ) {
         //On Deploy the ICO is NOT Started
         status = CrowdfundingStatus.NotStarted;
         owner = payable(_getSender()); //setting the owner of the ICO
         tokenAddress = _tokenAddress;
-        tokenHandlerAddress = _tokenHandlerAddress;
 
-        _tokenHandler = _getERC20TokenHandler(
-            tokenAddress,
-            tokenHandlerAddress
+        ERC20 token = ERC20(_tokenAddress);
+        require(
+            token.balanceOf(owner) > 0,
+            "Provided Address is either not ERC20 or caller cannot distribute the token"
+        );
+        require(
+            _percentOfTotalSupplyToBeDistributed > 0 &&
+                _percentOfTotalSupplyToBeDistributed <= 100,
+            "Invalid Percents Presented"
         );
 
-        _tokenHandler.loadBalance(
-            _getPercentsOfTotalSupplyForDistribution(),
-            100
-        ); // percents
+        maxTokenAmountToBeDestributed = Calculations.mulScale(
+            token.totalSupply(),
+            _percentOfTotalSupplyToBeDistributed,
+            _getPercentageScale()
+        );
+
+        emit ContractInitialized(address(this), status);
     }
 
     //TODO:
@@ -58,6 +72,8 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         canPay(msg.sender, msg.value)
         returns (bool)
     {
+        ERC20 token = ERC20(tokenAddress);
+
         uint256 tokensToBeSend = _getTokenAmount(msg.value);
 
         require(tokensToBeSend > 0, "Not Enought EHT amount for 1 token");
@@ -68,7 +84,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         //transafer token to sender address
 
-        //tokenHandler.transfer(msg.sender, msg.value);
+        token.transfer(msg.sender, tokensToBeSend);
 
         emit TransferToken(msg.sender, msg.value, owner);
 
@@ -81,10 +97,12 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         virtual
         returns (uint256 tokenAmount)
     {
+        ERC20 token = ERC20(tokenAddress);
+
         return
             Calculations.calculatetTokenAmount(
                 ethAmount,
-                _tokenHandler.getDecimals(),
+                token.decimals(),
                 _getRate(ethAmount)
             );
     }
@@ -101,25 +119,14 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         return msg.sender;
     }
 
-    function _getPercentsOfTotalSupplyForDistribution()
-        internal
-        pure
-        virtual
-        returns (uint8)
-    {
-        return 100;
-    }
-
-    //Implement the required IERC20TokenHandler
-    function _getERC20TokenHandler(
-        address _tokenAddress,
-        address _tokenHandlerAddress
-    ) internal virtual returns (IERC20TokenHandler);
-
     //Implement logic for calculating the rate for exchanging ETH to Token
     function _getRate(uint256 ethAmount)
         internal
         view
         virtual
         returns (uint256 tokenAmount);
+
+    function _getPercentageScale() internal pure virtual returns (uint256) {
+        return DEFAULT_PERCENTAGE_SCALE;
+    }
 }

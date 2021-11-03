@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 
 import "./CrowdfundingBase.sol";
 import "../interfaces/ICrowdfunding.sol";
-import "../interfaces/IERC20TokenHandler.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../interfaces/ITimeBasedCrowdfunding.sol";
 
@@ -44,8 +43,9 @@ abstract contract TimeBasedCrowdfunding is
         uint256 _startDate,
         uint256 _endDate,
         address _tokenAddress,
-        address _tokenHandlerAddress
-    ) CrowdfundingBase(_tokenAddress, _tokenHandlerAddress) {
+        address _tokenHandlerAddress,
+        uint8 _percentOfTotalSupplyToBeDistributed
+    ) CrowdfundingBase(_tokenAddress, _percentOfTotalSupplyToBeDistributed) {
         //basic validation of the dates
         blockDateTime = block.timestamp;
 
