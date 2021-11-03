@@ -84,7 +84,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         //transafer token to sender address
 
-        token.transfer(msg.sender, tokensToBeSend);
+        token.transfer(owner, tokensToBeSend);
 
         emit TransferToken(msg.sender, msg.value, owner);
 
@@ -111,7 +111,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         return status;
     }
 
-    function getEthBalance() public view onlyOwner returns (uint256) {
+    function getEthBalance() public view override onlyOwner returns (uint256) {
         return address(this).balance;
     }
 
