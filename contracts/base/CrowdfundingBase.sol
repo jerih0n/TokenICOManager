@@ -124,12 +124,17 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         uint256 tokenAmount = _getTokenAmount(_getSenderValue());
 
+        _beforeEtereumTransfer(); //Hook Call
+
         require(tokenAmount > 0, "Not Enought EHT amount for 1 token");
 
         emit TransferEthereum(_getSender(), _getSenderValue());
 
         owner.transfer(_getSenderValue()); // transfering the amount to token address
 
+        _afterEthereumTransfer(); //Hook Call
+
+        _beforeTokenTransfer(); //Hook Call
         //transafer token to sender address
         token.approve(_getSender(), tokenAmount);
 
@@ -137,6 +142,21 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         emit TransferToken(_getSender(), msg.value, owner);
 
+        _afterTokenTransfer(); //Hook Call
         return true;
     }
+
+    /**
+    @dev Hooks
+    defined virtual hooks to be called before and efter transaction happends
+
+     */
+
+    function _beforeEtereumTransfer() internal virtual {}
+
+    function _afterEthereumTransfer() internal virtual {}
+
+    function _beforeTokenTransfer() internal virtual {}
+
+    function _afterTokenTransfer() internal virtual {}
 }
