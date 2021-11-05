@@ -68,7 +68,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     function buy()
         public
         payable
-        virtual
         override
         canPay(msg.sender, msg.value)
         returns (bool)
