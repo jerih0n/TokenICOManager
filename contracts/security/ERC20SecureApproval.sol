@@ -7,7 +7,7 @@ contract ERC20SecureApproval is ERC20 {
     /**
     @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
     
-    This method is a wrapper for approce fuction of standart ERC20 tokne in order to prevent vector attack with combination of approve and transferFrom calls
+    This method is a wrapper for approve fuction of standard ERC20 token in order to prevent vector attack with combination of approve and transferFrom calls
     see this issue for more information
     https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
      */
