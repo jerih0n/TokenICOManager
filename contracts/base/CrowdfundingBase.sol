@@ -118,7 +118,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         return DEFAULT_PERCENTAGE_SCALE;
     }
 
-    function _buy() internal virtual returns (bool) {
+    function _buy() internal returns (bool) {
         ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
 
         uint256 tokenAmount = _getTokenAmount(_getSenderValue());
