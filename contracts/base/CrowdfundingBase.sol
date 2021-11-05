@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../interfaces/ICrowdfunding.sol";
 import "../lib/Calculations.sol";
+import "../security/ERC20SecureApproval.sol";
 
 //Declare the base logic for ICO contract
 abstract contract CrowdfundingBase is ICrowdfunding {
@@ -43,7 +44,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         owner = payable(_getSender()); //setting the owner of the ICO
         tokenAddress = _tokenAddress;
 
-        ERC20 token = ERC20(_tokenAddress);
+        ERC20SecureApproval token = ERC20SecureApproval(_tokenAddress);
         require(
             token.balanceOf(owner) > 0,
             "Provided Address is either not ERC20 or caller cannot distribute the token"
@@ -72,23 +73,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         canPay(msg.sender, msg.value)
         returns (bool)
     {
-        ERC20 token = ERC20(tokenAddress);
-
-        uint256 tokensToBeSend = _getTokenAmount(msg.value);
-
-        require(tokensToBeSend > 0, "Not Enought EHT amount for 1 token");
-
-        emit TransferEthereum(msg.sender, msg.value);
-
-        owner.transfer(msg.value); // transfering the amount to token address
-
-        //transafer token to sender address
-
-        token.transfer(owner, tokensToBeSend);
-
-        emit TransferToken(msg.sender, msg.value, owner);
-
-        return true;
+        require(_buy(), "Transaction Failed");
     }
 
     function _getTokenAmount(uint256 ethAmount)
@@ -97,7 +82,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         virtual
         returns (uint256 tokenAmount)
     {
-        ERC20 token = ERC20(tokenAddress);
+        ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
 
         return
             Calculations.calculatetTokenAmount(
@@ -119,6 +104,10 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         return msg.sender;
     }
 
+    function _getSenderValue() internal view returns (uint256) {
+        return msg.value;
+    }
+
     //Implement logic for calculating the rate for exchanging ETH to Token
     function _getRate(uint256 ethAmount)
         internal
@@ -128,5 +117,26 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
     function _getPercentageScale() internal pure virtual returns (uint256) {
         return DEFAULT_PERCENTAGE_SCALE;
+    }
+
+    function _buy() internal virtual returns (bool) {
+        ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
+
+        uint256 tokenAmount = _getTokenAmount(_getSenderValue());
+
+        require(tokenAmount > 0, "Not Enought EHT amount for 1 token");
+
+        emit TransferEthereum(_getSender(), _getSenderValue());
+
+        owner.transfer(_getSenderValue()); // transfering the amount to token address
+
+        //transafer token to sender address
+        token.approve(_getSender(), tokenAmount);
+
+        token.transferFrom(owner, _getSender(), tokenAmount);
+
+        emit TransferToken(_getSender(), msg.value, owner);
+
+        return true;
     }
 }
