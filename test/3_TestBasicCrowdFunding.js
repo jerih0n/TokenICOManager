@@ -3,13 +3,11 @@ const BigNumber = require("bignumber.js");
 
 //test the basic functionality of the Crowdfunding cotract
 const TestToken = artifacts.require("TestToken");
-const OpenZeppelinERC20TokenHandler = artifacts.require("OpenZeppelingERC20TokenHandler");
 const TestBaseCrowdfundingContract = artifacts.require("TestBasicCrowdFunding")
-const Calculations = artifacts.require("Calculations");
 
 
 
-contract('TestBaseCrowdfundingContract', (accounts) => {
+contract('TestBasicCrowdFunding', (accounts) => {
 
     it('should deploy contract successfully', async () => {
         try {
@@ -75,5 +73,16 @@ contract('TestBaseCrowdfundingContract', (accounts) => {
         var tokenAmount = new BigNumber(`${await testBaseCrowdfundingContract.test_getTokenAmount.call(web3.utils.toWei("0.09", "ether"))}`);//1e18 wei
 
         assert.isTrue(tokenAmount.eq(expectedTokenAmount), "should calculate correctly the token amount")
+    });
+
+    it(`should perform buy successfully with 1 eth`, async () => {
+
+        const testToken = await TestToken.deployed();
+        const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, 100, { from: accounts[0] });
+
+        await debug(testBaseCrowdfundingContract.buy.call({ from: accounts[1], value: web3.utils.toWei("1", "ether") }))
+
+        assert.isTrue(true, "Buy call returns false!")
+
     });
 });

@@ -5,12 +5,8 @@ pragma solidity ^0.8.0;
 import "./CrowdfundingBase.sol";
 import "../interfaces/ICrowdfunding.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../interfaces/ITimeBasedCrowdfunding.sol";
 
-abstract contract TimeBasedCrowdfunding is
-    CrowdfundingBase,
-    ITimeBasedCrowdfunding
-{
+abstract contract TimeBasedCrowdfunding is CrowdfundingBase {
     uint256 private startDate; //startDate of the ICO in second
     uint256 private endDate; //end Date of the ICO in second
     uint256 private blockDateTime;
@@ -43,7 +39,6 @@ abstract contract TimeBasedCrowdfunding is
         uint256 _startDate,
         uint256 _endDate,
         address _tokenAddress,
-        address _tokenHandlerAddress,
         uint8 _percentOfTotalSupplyToBeDistributed
     ) CrowdfundingBase(_tokenAddress, _percentOfTotalSupplyToBeDistributed) {
         //basic validation of the dates
@@ -64,40 +59,9 @@ abstract contract TimeBasedCrowdfunding is
         payable
         virtual
         override
-        started
         canPay(msg.sender, msg.value)
         returns (bool)
     {
         return super.buy();
-    }
-
-    function start()
-        public
-        virtual
-        override
-        onlyOwner
-        notStarted
-        returns (CrowdfundingStatus)
-    {
-        status = CrowdfundingStatus.InProgress;
-
-        emit IcoStart(startDate, endDate);
-
-        return status;
-    }
-
-    function end()
-        public
-        virtual
-        override
-        onlyOwner
-        icoCanExpire
-        returns (CrowdfundingStatus)
-    {
-        status = CrowdfundingStatus.Finished;
-
-        emit IcoEnd(endDate);
-
-        return status;
     }
 }

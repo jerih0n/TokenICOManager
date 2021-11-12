@@ -21,7 +21,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     mapping(address => uint256) internal contributers;
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Access Denied");
+        require(_getSender() == owner, "Access Denied");
         _;
     }
 
@@ -31,6 +31,20 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         _;
     }
 
+    modifier canStart() {
+        require(
+            status == CrowdfundingStatus.NotStarted,
+            "The crowdfund cannot start"
+        );
+        _;
+    }
+    modifier canEnd() {
+        require(
+            status != CrowdfundingStatus.Finished,
+            "The crowdfund is already finished"
+        );
+        _;
+    }
     event TransferEthereum(address _from, uint256 _value);
     event TransferToken(address _to, uint256 _value, address _tokenAddress);
     event ContractInitialized(address _self, CrowdfundingStatus status);
@@ -68,6 +82,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     function buy()
         public
         payable
+        virtual
         override
         canPay(msg.sender, msg.value)
         returns (bool)
@@ -129,6 +144,8 @@ abstract contract CrowdfundingBase is ICrowdfunding {
 
         emit TransferEthereum(_getSender(), _getSenderValue());
 
+        require(_performTokenBuy(tokenAmount), "Transfer failed");
+
         owner.transfer(_getSenderValue()); // transfering the amount to token address
 
         _afterEthereumTransfer(); //Hook Call
@@ -144,6 +161,24 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         _afterTokenTransfer(); //Hook Call
         return true;
     }
+
+    function start()
+        public
+        virtual
+        override
+        canStart
+        returns (CrowdfundingStatus)
+    {
+        status = CrowdfundingStatus.InProgress;
+        return status;
+    }
+
+    function end() public virtual override canEnd returns (CrowdfundingStatus) {
+        status = CrowdfundingStatus.Finished;
+        return status;
+    }
+
+    function _performTokenBuy(uint256 amount) internal virtual returns (bool) {}
 
     /**
     @dev Hooks

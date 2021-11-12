@@ -8,9 +8,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract TestBasicCrowdFunding is CrowdfundingBase {
     using SafeMath for uint256;
 
-    constructor(address _tokenAddress, address _tokenHandlerAddress)
-        CrowdfundingBase(_tokenAddress, 100)
-    {}
+    constructor(address _tokenAddress) CrowdfundingBase(_tokenAddress, 100) {}
 
     function test_getRate(uint256 ethAmount) public view returns (uint256) {
         return _getRate(ethAmount);

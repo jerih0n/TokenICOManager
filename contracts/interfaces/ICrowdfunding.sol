@@ -11,4 +11,8 @@ interface ICrowdfunding {
     function getStatus() external returns (CrowdfundingStatus);
 
     function getEthBalance() external view returns (uint256);
+
+    function start() external returns (CrowdfundingStatus);
+
+    function end() external returns (CrowdfundingStatus);
 }
