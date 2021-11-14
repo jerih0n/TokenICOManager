@@ -75,14 +75,50 @@ contract('TestBasicCrowdFunding', (accounts) => {
         assert.isTrue(tokenAmount.eq(expectedTokenAmount), "should calculate correctly the token amount")
     });
 
-    it(`should perform buy successfully with 1 eth`, async () => {
+    it(`should return Not Started when contract is not started`, async () => {
+        const testToken = await TestToken.deployed();
+        const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, 100, { from: accounts[0] });
+        const status = "Not Started";
 
+        const resut = web3.utils.toUtf8(await testBaseCrowdfundingContract.getStatus());
+        assert.equal(status, resut, "status is not correct")
+    })
+
+    it(`should return In Progress when crowdfunding is in progress`, async () => {
+        const testToken = await TestToken.deployed();
+        const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, 100, { from: accounts[0] });
+        const status = "Not Started";
+
+        const resut = web3.utils.toUtf8(await testBaseCrowdfundingContract.getStatus());
+        assert.equal(status, resut, "status is not correct")
+    })
+
+
+    it(`should throw error when crowdfunding is started twice`, async () => {
         const testToken = await TestToken.deployed();
         const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, 100, { from: accounts[0] });
 
-        await debug(testBaseCrowdfundingContract.buy.call({ from: accounts[1], value: web3.utils.toWei("1", "ether") }))
+        try {
+            await testBaseCrowdfundingContract.start.call();
+            const resut = web3.utils.toUtf8(await testBaseCrowdfundingContract.start.call());
+            assert.isTrue(false, "Error is trown");
+        }
+        catch (error) {
+            assert.isTrue(true, "Error is trown");
+        }
+    })
 
-        assert.isTrue(true, "Buy call returns false!")
+    it(`should throw error when end is called before start `, async () => {
+        const testToken = await TestToken.deployed();
+        const testBaseCrowdfundingContract = await TestBaseCrowdfundingContract.deployed(testToken.address, 100, { from: accounts[0] });
 
-    });
+        try {
+            await testBaseCrowdfundingContract.end.call();
+
+            assert.isTrue(false, "Error is trown");
+        }
+        catch (error) {
+            assert.isTrue(true, "Error is trown");
+        }
+    })
 });

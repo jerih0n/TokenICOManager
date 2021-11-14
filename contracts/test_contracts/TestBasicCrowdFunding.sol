@@ -2,7 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import "../base/CrowdfundingBase.sol";
+import "../base/TokenOwnerCrowdfundingContract.sol";
+import "../base/TokenOwnerCrowdfundingContract.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract TestBasicCrowdFunding is CrowdfundingBase {

@@ -40,7 +40,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     }
     modifier canEnd() {
         require(
-            status != CrowdfundingStatus.Finished,
+            status == CrowdfundingStatus.InProgress,
             "The crowdfund is already finished"
         );
         _;
@@ -106,8 +106,8 @@ abstract contract CrowdfundingBase is ICrowdfunding {
             );
     }
 
-    function getStatus() public virtual override returns (CrowdfundingStatus) {
-        return status;
+    function getStatus() public view virtual override returns (bytes32) {
+        return _getStatusAsString(status);
     }
 
     function getEthBalance() public view override onlyOwner returns (uint256) {
@@ -121,13 +121,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     function _getSenderValue() internal view returns (uint256) {
         return msg.value;
     }
-
-    //Implement logic for calculating the rate for exchanging ETH to Token
-    function _getRate(uint256 ethAmount)
-        internal
-        view
-        virtual
-        returns (uint256 tokenAmount);
 
     function _getPercentageScale() internal pure virtual returns (uint256) {
         return DEFAULT_PERCENTAGE_SCALE;
@@ -162,20 +155,14 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         return true;
     }
 
-    function start()
-        public
-        virtual
-        override
-        canStart
-        returns (CrowdfundingStatus)
-    {
+    function start() public virtual override canStart returns (bytes32) {
         status = CrowdfundingStatus.InProgress;
-        return status;
+        return getStatus();
     }
 
-    function end() public virtual override canEnd returns (CrowdfundingStatus) {
+    function end() public virtual override canEnd returns (bytes32) {
         status = CrowdfundingStatus.Finished;
-        return status;
+        return getStatus();
     }
 
     function _performTokenBuy(uint256 amount) internal virtual returns (bool) {}
@@ -193,4 +180,25 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     function _beforeTokenTransfer() internal virtual {}
 
     function _afterTokenTransfer() internal virtual {}
+
+    //Implement logic for calculating the rate for exchanging ETH to Token
+    function _getRate(uint256 ethAmount)
+        internal
+        view
+        virtual
+        returns (uint256 tokenAmount);
+
+    function _getStatusAsString(CrowdfundingStatus _status)
+        private
+        pure
+        returns (bytes32)
+    {
+        if (_status == CrowdfundingStatus.NotStarted) {
+            return bytes32("Not Started");
+        } else if (_status == CrowdfundingStatus.InProgress) {
+            return bytes32("In Progress");
+        } else {
+            return bytes32("Finished");
+        }
+    }
 }

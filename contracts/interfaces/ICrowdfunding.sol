@@ -8,11 +8,11 @@ interface ICrowdfunding {
     function buy() external payable returns (bool);
 
     //return the status of ICO
-    function getStatus() external returns (CrowdfundingStatus);
+    function getStatus() external view returns (bytes32);
 
     function getEthBalance() external view returns (uint256);
 
-    function start() external returns (CrowdfundingStatus);
+    function start() external returns (bytes32);
 
-    function end() external returns (CrowdfundingStatus);
+    function end() external returns (bytes32);
 }

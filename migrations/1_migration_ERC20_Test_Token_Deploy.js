@@ -20,10 +20,10 @@ module.exports = async function (deployer, network, accounts) {
 
 
     deployer.then(async () => {
-        await deployer.deploy(Calculations, { from: accounts[0], overwrite: false });
-        await deployer.deploy(TestToken, { from: accounts[0], overwrite: false });
+        await deployer.deploy(Calculations, { from: accounts[0], overwrite: true });
+        await deployer.deploy(TestToken, { from: accounts[0], overwrite: true });
         await deployer.link(Calculations, TestBasicCrowdFunding);
-        await deployer.deploy(TestBasicCrowdFunding, TestToken.address, { from: accounts[0], overwrite: false })
+        await deployer.deploy(TestBasicCrowdFunding, TestToken.address, { from: accounts[0], overwrite: true })
     })
 
 };

@@ -5,12 +5,16 @@ pragma solidity ^0.8.0;
 import "./CrowdfundingBase.sol";
 import "../security/ERC20SecureApproval.sol";
 import "../enums/CrowdfundingStatus.sol";
+import "../interfaces/ITokenOwnerCrowdfundingContract.sol";
 
 /**
 Default implementation of the crowdfunding contract. The contract is the OWNER of the tokens. 
  */
 
-abstract contract TokenOwnerCrowdfundingContract is CrowdfundingBase {
+abstract contract TokenOwnerCrowdfundingContract is
+    CrowdfundingBase,
+    ITokenOwnerCrowdfundingContract
+{
     address private owner;
     bool private isInited;
 
@@ -39,7 +43,14 @@ abstract contract TokenOwnerCrowdfundingContract is CrowdfundingBase {
         isInited = false;
     }
 
-    function initCrowdsale() public onlyOwner notInited returns (bool) {
+    function initCrowdsaleContract()
+        public
+        virtual
+        override
+        onlyOwner
+        notInited
+        returns (bool)
+    {
         isInited = true;
         ERC20SecureApproval(tokenAddress).transfer(
             payable(address(this)),
@@ -59,21 +70,16 @@ abstract contract TokenOwnerCrowdfundingContract is CrowdfundingBase {
         token.transfer(super._getSender(), amount);
     }
 
-    function start()
-        public
-        virtual
-        override
-        canStart
-        returns (CrowdfundingStatus)
-    {
+    function start() public virtual override canStart returns (bytes32) {
         return super.start();
     }
 
-    function end()
-        public
-        virtual
-        override
-        canEnd
-        returns (CrowdfundingStatus)
-    {}
+    function end() public virtual override canEnd returns (bytes32) {
+        return super.end();
+    }
+
+    function getTokenBalance() public view override returns (uint256) {
+        ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
+        return token.balanceOf(address(this));
+    }
 }
