@@ -15,9 +15,12 @@ abstract contract TokenOwnerCrowdfundingContract is
     CrowdfundingBase,
     ITokenOwnerCrowdfundingContract
 {
-    address private owner;
     bool private isInited;
 
+    modifier inited() {
+        require(isInited, "Crowdfunding not inited inited");
+        _;
+    }
     modifier notInited() {
         require(!isInited, "Crowdfunding already inited");
         _;
@@ -39,8 +42,8 @@ abstract contract TokenOwnerCrowdfundingContract is
         address _tokenAddress,
         uint8 _percentOfTotalSupplyToBeDistributed
     ) CrowdfundingBase(_tokenAddress, _percentOfTotalSupplyToBeDistributed) {
-        owner = super._getSender();
         isInited = false;
+        //ERC20SecureApproval(_tokenAddress).approve(spender, amount);
     }
 
     function initCrowdsaleContract()
@@ -64,13 +67,14 @@ abstract contract TokenOwnerCrowdfundingContract is
         internal
         virtual
         override
+        inited
         returns (bool)
     {
         ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
         token.transfer(super._getSender(), amount);
     }
 
-    function start() public virtual override canStart returns (bytes32) {
+    function start() public virtual override inited canStart returns (bytes32) {
         return super.start();
     }
 
@@ -81,5 +85,14 @@ abstract contract TokenOwnerCrowdfundingContract is
     function getTokenBalance() public view override returns (uint256) {
         ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
         return token.balanceOf(address(this));
+    }
+
+    function getMaxTokenAmountToBeDestributed()
+        public
+        view
+        override
+        returns (uint256)
+    {
+        return maxTokenAmountToBeDestributed;
     }
 }

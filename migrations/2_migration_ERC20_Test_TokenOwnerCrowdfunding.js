@@ -1,6 +1,6 @@
 const Calculations = artifacts.require("Calculations");
 const TestToken = artifacts.require("TestToken");
-const TestBasicCrowdFunding = artifacts.require("TestBasicCrowdFunding");
+const TestTokenOwnerCrowdfundig = artifacts.require("TestTokenOwnerCrowdfundig");
 
 //Deploying in main net will cost you real ETH is gass FEE! Be carfull 
 module.exports = async function (deployer, network, accounts) {
@@ -15,9 +15,8 @@ module.exports = async function (deployer, network, accounts) {
 
     deployer.then(async () => {
         await deployer.deploy(Calculations, { from: accounts[0], overwrite: true });
-        await deployer.deploy(TestToken, { from: accounts[0], overwrite: true });
-        await deployer.link(Calculations, TestBasicCrowdFunding);
-        await deployer.deploy(TestBasicCrowdFunding, TestToken.address, { from: accounts[0], overwrite: true })
+        await deployer.link(Calculations, TestTokenOwnerCrowdfundig);
+        await deployer.deploy(TestTokenOwnerCrowdfundig, TestToken.address, { from: accounts[0], overwrite: true })
     })
 
 };

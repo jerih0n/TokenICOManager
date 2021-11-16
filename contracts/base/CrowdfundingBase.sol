@@ -15,7 +15,7 @@ abstract contract CrowdfundingBase is ICrowdfunding {
     uint256 constant DEFAULT_PERCENTAGE_SCALE = 100;
 
     CrowdfundingStatus internal status;
-    address payable private owner;
+    address payable internal owner;
     address internal tokenAddress;
     uint256 internal maxTokenAmountToBeDestributed;
     mapping(address => uint256) internal contributers;
