@@ -10,9 +10,10 @@ import "../security/ERC20SecureApproval.sol";
  */
 contract TestToken is ERC20SecureApproval {
     address payable internal _owner;
+    uint256 private _totalSupply = 300000000 * 10**18;
 
     constructor() ERC20SecureApproval("TestToken", "TT") {
-        _mint(msg.sender, 10000000000000000000000000);
+        _mint(msg.sender, _totalSupply);
         _owner = payable(msg.sender);
     }
 

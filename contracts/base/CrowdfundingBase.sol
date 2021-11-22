@@ -78,7 +78,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         emit ContractInitialized(address(this), status);
     }
 
-    //TODO:
     function buy()
         public
         payable
@@ -97,7 +96,6 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         returns (uint256 tokenAmount)
     {
         ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
-
         return
             Calculations.calculatetTokenAmount(
                 ethAmount,
@@ -144,10 +142,8 @@ abstract contract CrowdfundingBase is ICrowdfunding {
         _afterEthereumTransfer(); //Hook Call
 
         _beforeTokenTransfer(); //Hook Call
-        //transafer token to sender address
-        token.approve(_getSender(), tokenAmount);
 
-        token.transferFrom(owner, _getSender(), tokenAmount);
+        _performTokenBuy(tokenAmount);
 
         emit TransferToken(_getSender(), msg.value, owner);
 

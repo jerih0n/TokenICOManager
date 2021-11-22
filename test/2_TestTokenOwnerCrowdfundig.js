@@ -33,8 +33,30 @@ contract('TestTokenOwnerCrowdfundig', (accounts) => {
 
         let contractBalance = web3.utils.BN(await testToken.balanceOf(testBaseCrowdfundingContract.address));
 
-        assert.isTrue(accBalance > 0, "Account must have balance")
-        assert.isTrue(contractBalance > 0, "No money are transfered")
+        assert.isTrue(!contractBalance.isZero(), "No money are transfered")
+    });
+
+    it(`should transfer tokens on buy`, async () => {
+        const testToken = await TestToken.deployed({ from: accounts[0] });
+        const testBaseCrowdfundingContract = await TestTokenOwnerCrowdfundig.deployed(testToken.address, 100, { from: accounts[0] });
+
+        const recievingAddress = accounts[1];
+
+        const accountBalance = web3.utils.BN(await testToken.balanceOf(recievingAddress));
+
+        let initialContractBalance = web3.utils.BN(await testToken.balanceOf(testBaseCrowdfundingContract.address));
+
+        assert.isTrue(accountBalance == 0, "Account Should not have token balance");
+
+        const oneEther = new BigNumber(`${web3.utils.toWei('1', 'ether')}`)
+
+        await testBaseCrowdfundingContract.buy({ from: recievingAddress, value: oneEther.toString() });
+
+        const recievingAddressBalance = web3.utils.BN(await testToken.balanceOf(recievingAddress));
+
+        let contractBalanceAfterTransfer = web3.utils.BN(await testToken.balanceOf(testBaseCrowdfundingContract.address));
+
+        assert.isTrue(!recievingAddressBalance.isZero(), "Account should have balance");
     });
 
 });

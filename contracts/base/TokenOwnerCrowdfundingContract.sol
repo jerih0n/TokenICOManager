@@ -17,15 +17,6 @@ abstract contract TokenOwnerCrowdfundingContract is
 {
     bool private isInited;
 
-    modifier inited() {
-        require(isInited, "Crowdfunding not inited inited");
-        _;
-    }
-    modifier notInited() {
-        require(!isInited, "Crowdfunding already inited");
-        _;
-    }
-
     modifier _canStart() {
         require(
             status == CrowdfundingStatus.NotStarted,
@@ -46,35 +37,18 @@ abstract contract TokenOwnerCrowdfundingContract is
         //ERC20SecureApproval(_tokenAddress).approve(spender, amount);
     }
 
-    function initCrowdsaleContract()
-        public
-        virtual
-        override
-        onlyOwner
-        notInited
-        returns (bool)
-    {
-        isInited = true;
-        ERC20SecureApproval(tokenAddress).transfer(
-            payable(address(this)),
-            maxTokenAmountToBeDestributed
-        );
-
-        return true;
-    }
-
     function _performTokenBuy(uint256 amount)
         internal
         virtual
         override
-        inited
         returns (bool)
     {
         ERC20SecureApproval token = ERC20SecureApproval(tokenAddress);
-        token.transfer(super._getSender(), amount);
+        token.transfer(_getSender(), amount);
+        return true;
     }
 
-    function start() public virtual override inited canStart returns (bytes32) {
+    function start() public virtual override canStart returns (bytes32) {
         return super.start();
     }
 

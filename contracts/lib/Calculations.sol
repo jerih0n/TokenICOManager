@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 
 library Calculations {
     function calculatetTokenAmount(
-        uint256 ethAmount,
-        uint8 tokenDecimals,
-        uint256 tokenToEthRate
+        uint256 ethAmount, //100000000000000 * 10000
+        uint8 tokenDecimals, // 18
+        uint256 tokenToEthRate //1000
     ) external pure returns (uint256) {
         return ((ethAmount * (10**tokenDecimals)) / 1 ether) * tokenToEthRate;
     }
